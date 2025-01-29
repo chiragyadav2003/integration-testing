@@ -14,8 +14,6 @@ const inputSchema = z.object({
 
 app.post('/sum', async (req, res) => {
   const parsedBody = inputSchema.safeParse(req.body);
-  console.log(req.body);
-  console.log(typeof req.body.a);
 
   if (!parsedBody.success) {
     res.status(422).json({ message: 'Invalid input' });
