@@ -6,6 +6,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: testIntegration
+      POSTGRES_DB: testDb
     ports:
       - '5432:5432'
