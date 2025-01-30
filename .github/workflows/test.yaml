@@ -15,7 +15,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js (Alpine)
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 20
@@ -24,28 +24,24 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Set up Docker with Buildx and Compose
+    - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Start PostgreSQL Container
+    - name: Install Docker Compose Plugin
       run: |
-        # Pull the Alpine-based PostgreSQL image
-        docker pull postgres:15-alpine
+        # Add Docker's official GPG key
+        sudo mkdir -p /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-        # Start PostgreSQL container
-        docker run --name integration_testing_container \
-          -e POSTGRES_USER=postgres \
-          -e POSTGRES_PASSWORD=mysecretpassword \
-          -e POSTGRES_DB=testDb \
-          -p 5432:5432 \
-          -d postgres:15-alpine
+        # Add Docker repository
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-        # Wait for PostgreSQL to be ready
-        echo "Waiting for PostgreSQL to start..."
-        until docker exec integration_testing_container pg_isready; do
-          sleep 1
-        done
-        echo "PostgreSQL is ready!"
+        # Update package list and install Docker Compose plugin
+        sudo apt-get update
+        sudo apt-get install -y docker-compose-plugin
 
-    - name: Run Integration Tests
+    - name: Ensure Docker Compose is available
+      run: docker compose version
+
+    - name: Run integration test
       run: npm run test:integration
