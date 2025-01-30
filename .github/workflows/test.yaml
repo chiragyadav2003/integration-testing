@@ -49,9 +49,3 @@ jobs:
 
     - name: Run Integration Tests
       run: npm run test:integration
-
-    - name: Clean Up Docker Containers
-      if: always()
-      run: |
-        docker stop integration_testing_container || true
-        docker rm integration_testing_container || true
