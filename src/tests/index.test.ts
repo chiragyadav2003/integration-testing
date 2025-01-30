@@ -1,8 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../index';
 import request from 'supertest';
+import { clearDb } from './helpers/clear-db';
 
 describe('POST /sum', () => {
+  beforeAll(async () => {
+    console.log('Clearing database ...');
+    await clearDb();
+  });
+
   it('should sum two numbers correctly', async () => {
     const { status, body } = await request(app)
       .post('/sum')
@@ -51,6 +57,11 @@ describe('POST /sum', () => {
 });
 
 describe('POST /multiply', () => {
+  beforeAll(async () => {
+    console.log('Clearing database ...');
+    await clearDb();
+  });
+
   it('should multiply two numbers correctly', async () => {
     const { status, body } = await request(app)
       .post('/multiply')
