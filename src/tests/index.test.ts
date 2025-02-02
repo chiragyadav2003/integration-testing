@@ -14,7 +14,7 @@ describe('POST /sum', () => {
       .post('/sum')
       .send({ a: 1, b: 2 });
     expect(status).toBe(200);
-    expect(body).toEqual({ answer: 3, id: expect.any(Number) });
+    expect(body).toEqual({ answer: 10, id: expect.any(Number) });
   });
 
   it('should return 422 for invalid input (non-numbers)', async () => {
@@ -37,7 +37,7 @@ describe('POST /sum', () => {
     const { status, body } = await request(app)
       .post('/sum')
       .send({ a: 0, b: 0 });
-    expect(status).toBe(200);
+    expect(status).toBe(400);
     expect(body).toEqual({ answer: 0, id: expect.any(Number) });
   });
 
